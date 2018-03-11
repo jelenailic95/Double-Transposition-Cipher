@@ -10,7 +10,6 @@ public class Message {
     private List<TranspositionType> transpositions;
     private String encodedMessage;
 
-
     public Message() {
     }
 

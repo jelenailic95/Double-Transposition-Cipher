@@ -4,33 +4,16 @@ import java.util.ArrayList;
 
 public class Matrix {
     private ArrayList<char[]> columns;
-    private int rowNum;
-    private int columnNum;
-    private int cellNum;
+    private int keyLength;
 
-    public int getCellNum() {
-        return cellNum;
+    public int getKeyLength() {
+        return keyLength;
     }
 
-    public void setCellNum(int cellNum) {
-        this.cellNum = cellNum;
+    public void setKeyLength(int keyLength) {
+        this.keyLength = keyLength;
     }
 
-    public int getRowNum() {
-        return rowNum;
-    }
-
-    public void setRowNum(int rowNum) {
-        this.rowNum = rowNum;
-    }
-
-    public int getColumnNum() {
-        return columnNum;
-    }
-
-    public void setColumnNum(int columnNum) {
-        this.columnNum = columnNum;
-    }
 
     public char[] getColumn(int index) {
         return this.columns.get(index);
@@ -48,9 +31,8 @@ public class Matrix {
         this.columns = new ArrayList<>();
     }
 
-    public Matrix(ArrayList<char[]> columns, int rowsNum, int columnsNum) {
+    public Matrix(ArrayList<char[]> columns, int keyLength) {
         this.columns = columns;
-        this.rowNum = rowsNum;
-        this.columnNum = columnsNum;
+        this.keyLength = keyLength;
     }
 }

@@ -37,8 +37,8 @@ function encode(message) {
         dataType: "json",
         data: message,
         success : function(data) {
-            console.log("E");   // document.getElementById('result')[0].setValue = data;
-            alert(data);
+            $(".result").show();
+            document.getElementById('result').innerHTML = data.encodedMessage;
         },
         error: function(XMLHttpRequest, textStatus) {
             alert("some error");

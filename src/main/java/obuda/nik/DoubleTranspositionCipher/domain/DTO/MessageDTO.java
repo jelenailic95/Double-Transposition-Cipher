@@ -3,15 +3,15 @@ package obuda.nik.DoubleTranspositionCipher.domain.DTO;
 import obuda.nik.DoubleTranspositionCipher.domain.enums.TranspositionType;
 
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 public class MessageDTO {
     @NotNull
     private String message;
     @NotNull
-    private Set<String> keys;
+    private List<String> keys;
     @NotNull
-    private Set<TranspositionType> transpositions;
+    private List<TranspositionType> transpositions;
     private String encodedMessage;
 
     public String getMessage() {
@@ -22,19 +22,19 @@ public class MessageDTO {
         this.message = message;
     }
 
-    public Set<String> getKeys() {
+    public List<String> getKeys() {
         return keys;
     }
 
-    public void setKeys(Set<String> keys) {
+    public void setKeys(List<String> keys) {
         this.keys = keys;
     }
 
-    public Set<TranspositionType> getTranspositions() {
+    public List<TranspositionType> getTranspositions() {
         return transpositions;
     }
 
-    public void setTranspositions(Set<TranspositionType> transpositions) {
+    public void setTranspositions(List<TranspositionType> transpositions) {
         this.transpositions = transpositions;
     }
 
