@@ -52,4 +52,13 @@ public class Message {
     public void setEncodedMessage(String encodedMessage) {
         this.encodedMessage = encodedMessage;
     }
+
+    public String getKey(int i) {
+        return keys.get(i);
+    }
+
+    public TranspositionType getTransposition(int i) {
+        return transpositions.get(i);
+    }
+
 }
