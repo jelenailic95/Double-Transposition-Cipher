@@ -45,7 +45,23 @@ function encode(message) {
         }
     });
 }
+function decode(message){
+    $.ajax({
+        type:'POST',
+        url:'api/cipher/decoder',
+        contentType:'application/json',
+        dataType:'json',
+        data: message,
+        success: function (data) {
+            $(".result").show();
+            document.getElementById('result').innerHTML = data.encodedMessage;
+        },
+        error: function () {
+            alert('some error');
+        }
+    })
 
+}
 /**
  * @desc Helper function to serialize all the form fields into a JSON string
  */

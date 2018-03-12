@@ -14,43 +14,107 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
     @Override
     public Message encodeMessage(Message message) {
-        List<Integer> positions1 = sortKeyAlphabetically(message.getKey(0));
-        List<Integer> positions2 = sortKeyAlphabetically(message.getKey(1));
-        String firstCipher;
 
+        // sort keys and get indexes for rearanging rows/columns
+        List<Integer> positions1 = getEncryptKeyPositions(message.getKey(0));
+        List<Integer> positions2 = getEncryptKeyPositions(message.getKey(1));
+
+        String firstCipher;   // result of the first transposition
+
+        // first transposition
         if (message.getTransposition(0) == TranspositionType.ROW) {
-            firstCipher = encryptByRow(message.getMessage(), positions1);
+            firstCipher = transpositionByRow(message.getMessage(), positions1);
         } else {
-            firstCipher = encryptByColumn(message.getMessage(), positions1);
+            firstCipher = transpositionByColumn(message.getMessage(), positions1);
         }
 
+        // second transposition
         if (message.getTransposition(1) == TranspositionType.ROW) {
-            message.setEncodedMessage(encryptByRow(firstCipher, positions2));
+            message.setEncodedMessage(transpositionByRow(firstCipher, positions2));
         } else {
-            message.setEncodedMessage(encryptByColumn(firstCipher, positions2));
+            message.setEncodedMessage(transpositionByColumn(firstCipher, positions2));
         }
 
         return message;
     }
 
-    private List<Integer> sortKeyAlphabetically(String key) {
+
+    @Override
+    public Message decodeMessage(Message message) {
+        List<Integer> positions1 = getDecryptKeyPositions(message.getKey(0));
+        List<Integer> positions2 = getDecryptKeyPositions(message.getKey(1));
+        String firstCipher;
+
+        if (message.getTransposition(0) == TranspositionType.ROW) {
+            firstCipher = transpositionByRow(message.getMessage(), positions1);
+        } else {
+            firstCipher = transpositionByColumn(message.getMessage(), positions1);
+        }
+
+        if (message.getTransposition(1) == TranspositionType.ROW) {
+            message.setEncodedMessage(transpositionByRow(firstCipher, positions2));
+        } else {
+            message.setEncodedMessage(transpositionByColumn(firstCipher, positions2));
+        }
+
+        return message;
+    }
+
+    /**
+     * This method sorts letters alphabetically and returns list of the letters positions in the sorted list.
+     * This method is used for encrypting.
+     *
+     * @param key Given key.
+     * @return List with positions of the letters in the sorted list.
+     */
+    private List<Integer> getEncryptKeyPositions(String key) {
         char[] givenKey = key.toCharArray();
         char[] sortedLetters = key.toCharArray();
 
-        Arrays.sort(sortedLetters);
+        Arrays.sort(sortedLetters);    // sort letters alphabetically
+        return getPositions(sortedLetters, givenKey);
+    }
 
-        ArrayList<Character> stringList = new ArrayList<>();
-        for (char letter : sortedLetters) {
-            stringList.add(letter);
+    private List<Integer> getPositions(char[] first, char[] sec) {
+        ArrayList<Character> sortedList = new ArrayList<>();
+        List<Integer> positions = new ArrayList<>();
+
+        // convert [] into array list, because it will be possible to use indexOf
+        for (char letter : first) {
+            sortedList.add(letter);
         }
 
-        List<Integer> positions = new ArrayList<>();
-        for (char letter : givenKey) {
-            positions.add(stringList.indexOf(letter));
+        // get positions of the letters in the sorted list
+        for (char letter : sec) {
+            positions.add(sortedList.indexOf(letter));
         }
         return positions;
     }
 
+
+    /**
+     * This method returns list of the letters positions before sorting them alphabetically.
+     * This method is used for decrypting.
+     *
+     * @param key Given key.
+     * @return List with positions of the letters before sorting them alphabetically.
+     */
+    private List<Integer> getDecryptKeyPositions(String key) {
+        char[] givenKey = key.toCharArray();
+        char[] sortedLetters = key.toCharArray();
+
+        Arrays.sort(sortedLetters);     // sort letters alphabetically
+        return getPositions(givenKey, sortedLetters);
+    }
+
+    /**
+     * This method adds char 'X' at the end of the given message.
+     * This method is called when there are missing letters for the regular matrix.
+     *
+     * @param mess Given message.
+     * @param n    Number of letters that we need to add.
+     * @return String with added 'X' at the end.
+     */
     private String repeatNTimes(String mess, int n) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(mess);
@@ -74,24 +138,49 @@ public class MessageServiceImpl implements MessageService {
         return matrica;
     }
 
+    /**
+     * This method adds char 'X' at the end of the given message.
+     * This method used for column transposition.
+     *
+     * @param array Initial matrix.
+     * @param index Position of the column in the matrix.
+     * @param size  Size of the matrix.
+     * @return column from the matrix.
+     */
     private static char[] getColumn(char[][] array, int index, int size) {
-        char[] column = new char[size];
+        char[] column = new char[size];     // create empty column
         for (int i = 0; i < column.length; i++) {
             column[i] = array[i][index];
         }
         return column;
     }
 
-    private Matrix rearange(Matrix m, List<Integer> positions, Matrix nova) {
+    /**
+     * This method adds char 'X' at the end of the given message.
+     * This method used for column transposition.
+     *
+     * @param m         Initial matrix.
+     * @param positions The new order of the columns/rows.
+     * @param newMatrix New matrix with rearanged positions of the columns/rows.
+     * @return New matrix with the rearanged positions of the columns/rows.
+     */
+    private Matrix rearange(Matrix m, List<Integer> positions, Matrix newMatrix) {
         for (int i = 0; i < m.getKeyLength(); i++) {
             int position = positions.get(i);
             char[] col = m.getColumn(i);
-            nova.setColumnOnGivenPosition(position, col);
+            newMatrix.setColumnOnGivenPosition(position, col);
         }
-        return nova;
+        return newMatrix;
     }
 
-    private String encryptByColumn(String message, List<Integer> positions) {
+    /**
+     * This method does transposition by columns.
+     *
+     * @param message   Given message for encrypting/decrypting.
+     * @param positions The new order of the columns/rows based on the key.
+     * @return Encrypted/decrypted message.
+     */
+    private String transpositionByColumn(String message, List<Integer> positions) {
         Matrix m = new Matrix();
         Matrix nova = new Matrix();
 
@@ -132,7 +221,14 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-    private String encryptByRow(String message, List<Integer> positions) {
+    /**
+     * This method does transposition by rows.
+     *
+     * @param message   Given message for encrypting/decrypting.
+     * @param positions The new order of the columns/rows based on the key.
+     * @return Encrypted/decrypted message.
+     */
+    private String transpositionByRow(String message, List<Integer> positions) {
         Matrix m = new Matrix();
         Matrix nova = new Matrix();
 
@@ -166,10 +262,5 @@ public class MessageServiceImpl implements MessageService {
         }
         System.out.println(output.toString());
         return output.toString().toUpperCase();
-    }
-
-    @Override
-    public Message decodeMessage(Message message) {
-        return message;
     }
 }

@@ -10,6 +10,8 @@
     <div class="col-md-3"></div>
     <div class="col-md-5">
         <div class="card">
+
+            <!-- encrypt/decrypt form-->
             <form method="POST" id="encoder-form">
                 <p class="h4 text-center py-4">Double Transposition Cipher</p>
 
@@ -46,6 +48,8 @@
                 <button type="SUBMIT" name="encoder" value="encode" class="btn btn-primary btn-block">Encode</button>
                 <button type="SUBMIT" name="decoder" value="decode" class="btn btn-warning btn-block">Decode</button>
             </form>
+
+            <!-- div where result of encrypt/decrypt is going to be stored-->
             <div class="result" hidden>
                 <label for="result">Message:</label>
                 <div id="result"></div>
