@@ -21,6 +21,9 @@ public class MessageServiceImpl implements MessageService {
 
         String firstCipher;   // result of the first transposition
 
+        // keep only letters and numbers
+        message.setMessage(message.getMessage().replaceAll("[^A-Za-z0-9]", ""));
+
         // first transposition
         if (message.getTransposition(0) == TranspositionType.ROW) {
             firstCipher = transpositionByRow(message.getMessage(), positions1);
@@ -43,7 +46,11 @@ public class MessageServiceImpl implements MessageService {
     public Message decodeMessage(Message message) {
         List<Integer> positions1 = getDecryptKeyPositions(message.getKey(0));
         List<Integer> positions2 = getDecryptKeyPositions(message.getKey(1));
-        String firstCipher;
+
+        String firstCipher;     // result of the first transposition
+
+        // keep only letters and numbers
+        message.setMessage(message.getMessage().replaceAll("[^A-Za-z0-9]", ""));
 
         if (message.getTransposition(0) == TranspositionType.ROW) {
             firstCipher = transpositionByRow(message.getMessage(), positions1);
@@ -242,7 +249,7 @@ public class MessageServiceImpl implements MessageService {
             message = repeatNTimes(message, diff);
         }
 
-        char[][] matrica = createFirstMatrix(message, keyLength, cols);   /// proveri kako popunjavanje ide
+        char[][] matrica = createFirstMatrix(message, keyLength, cols);
         // set columns
         for (int i = 0; i < keyLength; i++) {
             m.setColumn(matrica[i]);
